@@ -1,0 +1,2 @@
+# MagicPhotos
+MagicPhotos
