@@ -23,6 +23,9 @@ from editors.figures_editor import FiguresEditor
 
 class Editor:
     def __init__(self):
+        self.__is_calendar = False
+        self.__is_framed = False
+        self.__is_filtered = False
         self.__image = None
 
     def get_image(self):
@@ -39,30 +42,42 @@ class Editor:
     def add_text(self, coordinates=None, text=None, color=None, font=None, font_size=None):
         # TODO разобраться какие брать максимальные границы, пока 500х500
         height, width = self.__image.size
-        coordinates = set_coordinates(500, 500, coordinates)
         text = set_text(text)
         color = set_color(color)
 
-        if font is None:
-            # TODO выбрать рандомный шрифт
-            if font_size is None:
-                font_size = random.randint(0, 400)
+        if font_size is None:
+            font_size = random.randint(15, 40)
 
+        if font is None:
             font_name = random.choice(os.listdir(FONT_PATH))
-            font = ImageFont.truetype(FONT_PATH / font_name, font_size)
+            font = ImageFont.truetype(os.path.join(FONT_PATH, font_name), font_size)
+
+        font_height, font_weight = font.getsize(text)
+        coordinates = set_coordinates(
+            abs(height - font_height),
+            width,
+        )
+        print(coordinates)
 
         ImageDraw.Draw(self.__image).text(coordinates, text, color, font)
 
     def append_calendar(self):
+        if self.__is_calendar:
+            return
+
         calendar = Image.open(CALENDAR)
         calendar.thumbnail(self.__image.size)
         self.__image.paste(calendar, (0, 0), calendar)
+        self.__is_calendar = True
 
 
     def add_figures(self, figures):
         self.__image = FiguresEditor.add_figures(self.__image, figures)
 
     def add_frame(self, frame_number):
+        if self.__is_framed:
+            return
+
         with open(FRAME_PATH, 'r') as file:
             frames_const = json.load(file)
         frames_const = frames_const[frame_number]
@@ -75,4 +90,5 @@ class Editor:
             cv2.BORDER_CONSTANT,
             value=frames_const['colour']
         )
+        self.__is_framed = True
         self.__image = Image.fromarray(image)

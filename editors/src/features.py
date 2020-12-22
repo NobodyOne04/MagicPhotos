@@ -1,8 +1,11 @@
+import json
 import random
 
-def set_coordinates(max_x, max_y, coordinates = None):
+from editors.config import TEXTS
+
+def set_coordinates(max_x, max_y, min_weight=0, min_height=0, coordinates = None):
     if coordinates is None:
-        coordinates = (random.randint(0, max_x), random.randint(0, max_y))
+        coordinates = (random.randint(min_height, max_x), random.randint(min_weight, max_y))
     return coordinates
 
 def set_color(color = None):
@@ -17,6 +20,7 @@ def set_size(size = None):
 
 def set_text(text = None):
     if text is None:
-        # TODO сделать вывод рандомной фразы из заготвленного списка
-        text = 'Test'
+        with open(TEXTS, 'r') as file:
+            data = json.load(file)
+        text = random.choice(data)
     return text
