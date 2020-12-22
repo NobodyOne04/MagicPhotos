@@ -10,6 +10,7 @@ from PIL import (
     ImageDraw,
 )
 from editors.config import (
+    CALENDAR,
     FONT_PATH,
     FRAME_PATH,
 )
@@ -51,6 +52,12 @@ class Editor:
             font = ImageFont.truetype(FONT_PATH / font_name, font_size)
 
         ImageDraw.Draw(self.__image).text(coordinates, text, color, font)
+
+    def append_calendar(self):
+        calendar = Image.open(CALENDAR)
+        calendar.thumbnail(self.__image.size)
+        self.__image.paste(calendar, (0, 0), calendar)
+
 
     def add_figures(self, figures):
         self.__image = FiguresEditor.add_figures(self.__image, figures)

@@ -200,6 +200,8 @@ class Ui_MainWindow(object):
         self.pushButton_8.setStyleSheet("background-color: rgb(255, 255, 255);\n"
                                         "border-radius: 0px")
         self.pushButton_8.setObjectName("pushButton_8")
+        self.pushButton_8.clicked.connect(self.__handler.append_calendar)
+
         self.frame_2 = QtWidgets.QFrame(self.centralwidget)
         self.frame_2.setGeometry(QtCore.QRect(0, -10, 941, 31))
         self.frame_2.setStyleSheet("background-color: rgb(255, 255, 255);")

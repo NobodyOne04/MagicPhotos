@@ -70,6 +70,10 @@ class Handler:
         self.__editor.add_frame(frame)
         self.__set_image()
 
+    def append_calendar(self):
+        self.__editor.append_calendar()
+        self.__set_image()
+
     def text(self):
         self.__editor.add_text()
         self.__set_image()
