@@ -14,6 +14,9 @@ class Handler:
     def __init__(self, instance):
         self.__window_instance = instance
         self.__editor = Editor()
+        self.__is_calendar = False
+        self.__is_framed = False
+        self.__is_filtered = False
 
     def __set_image(self):
         image = self.__editor.get_image()
@@ -46,13 +49,14 @@ class Handler:
         image.save(name)
 
     def clear_image(self):
+        self.__is_calendar = False
+        self.__is_framed = False
+        self.__is_filtered = False
         self.__window_instance.image.clear()
 
-    def generate(self):
-        frame = self.__window_instance.comboBox_2.currentText()
-        figure = self.__window_instance.comboBox_3.currentText()
+    def add_figure(self):
         figures_dict = {
-            figure: [
+            'circle': [
                 {
                     'color': None,
                     'size': None,
@@ -67,12 +71,29 @@ class Handler:
 
         }
         self.__editor.add_figures(figures_dict)
-        self.__editor.add_frame(frame)
         self.__set_image()
 
+    def generate(self):
+        filter = self.__window_instance.comboBox.currentText()
+        frame = self.__window_instance.comboBox_2.currentText()
+        background = self.__window_instance.comboBox_3.currentText()
+
+        if not self.__is_filtered:
+            self.__editor.add_filter(filter)
+            self.__set_image()
+            self.__is_filtered = True
+
+        if not self.__is_framed:
+            self.__editor.add_frame(frame)
+            self.__set_image()
+            self.__is_framed = True
+
     def append_calendar(self):
+        if not self.__is_calendar:
+            return
         self.__editor.append_calendar()
         self.__set_image()
+        self.__is_calendar = True
 
     def text(self):
         self.__editor.add_text()

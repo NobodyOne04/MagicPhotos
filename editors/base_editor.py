@@ -10,6 +10,7 @@ from PIL import (
     ImageDraw,
 )
 from editors.config import (
+    FILTERS,
     CALENDAR,
     FONT_PATH,
     FRAME_PATH,
@@ -20,12 +21,10 @@ from editors.src.features import (
     set_text,
 )
 from editors.figures_editor import FiguresEditor
+from editors.filter_editor import FilterEditor
 
 class Editor:
     def __init__(self):
-        self.__is_calendar = False
-        self.__is_framed = False
-        self.__is_filtered = False
         self.__image = None
 
     def get_image(self):
@@ -57,27 +56,21 @@ class Editor:
             abs(height - font_height),
             width,
         )
-        print(coordinates)
 
         ImageDraw.Draw(self.__image).text(coordinates, text, color, font)
 
     def append_calendar(self):
-        if self.__is_calendar:
-            return
-
         calendar = Image.open(CALENDAR)
         calendar.thumbnail(self.__image.size)
         self.__image.paste(calendar, (0, 0), calendar)
-        self.__is_calendar = True
 
+    def add_filter(self, filter):
+        self.__image = FilterEditor.add_filter(self.__image, filter)
 
     def add_figures(self, figures):
         self.__image = FiguresEditor.add_figures(self.__image, figures)
 
     def add_frame(self, frame_number):
-        if self.__is_framed:
-            return
-
         with open(FRAME_PATH, 'r') as file:
             frames_const = json.load(file)
         frames_const = frames_const[frame_number]
@@ -90,5 +83,4 @@ class Editor:
             cv2.BORDER_CONSTANT,
             value=frames_const['colour']
         )
-        self.__is_framed = True
         self.__image = Image.fromarray(image)

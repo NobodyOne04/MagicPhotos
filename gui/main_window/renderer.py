@@ -24,7 +24,7 @@ class Ui_MainWindow(object):
         self.__handler = Handler(self)
         with open('./gui/main_window/combo_boxes/filter.json') as file:
             self.__filter_data = json.load(file)
-        with open('./gui/main_window/combo_boxes/figure.json') as file:
+        with open('./gui/main_window/combo_boxes/background.json') as file:
             self.__figure_data = json.load(file)
         with open('./gui/main_window/combo_boxes/frame.json') as file:
             self.__frame_data = json.load(file)
@@ -174,6 +174,8 @@ class Ui_MainWindow(object):
         self.pushButton_3.setStyleSheet("background-color: rgb(255, 255, 255);\n"
                                         "border-radius: 0px")
         self.pushButton_3.setObjectName("pushButton_3")
+        self.pushButton_3.clicked.connect(self.__handler.add_figure)
+
         self.pushButton_4 = QtWidgets.QPushButton(self.frame)
         self.pushButton_4.setGeometry(QtCore.QRect(10, 450, 201, 31))
         self.pushButton_4.setStyleSheet("background-color: rgb(255, 255, 255);\n"

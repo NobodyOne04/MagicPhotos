@@ -31,7 +31,7 @@ class FiguresEditor:
     def add_circles(image, user_figure_options_dict):
         data = asarray(image)
         for user_figure_option in user_figure_options_dict:
-            coordinates = set_coordinates(500, 500, user_figure_option['coordinates'])
+            coordinates = set_coordinates(500, 500)
             size = set_size(user_figure_option['size'])
             color = set_color(user_figure_option['color'])
 
