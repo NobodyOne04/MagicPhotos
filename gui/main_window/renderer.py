@@ -9,15 +9,19 @@
 import sys
 import json
 
-from PyQt5 import QtCore, QtGui, QtWidgets
+from PyQt5 import (
+    QtCore,
+    QtGui,
+    QtWidgets
+)
 
-from gui.main_window.handlers import LoadFileButtonHandler
+from gui.main_window.handlers import Handler
 
 
 class Ui_MainWindow(object):
     def __init__(self):
         super(Ui_MainWindow, self).__init__()
-        self.__handler = LoadFileButtonHandler(self)
+        self.__handler = Handler(self)
         with open('./gui/main_window/combo_boxes/filter.json') as file:
             self.__filter_data = json.load(file)
         with open('./gui/main_window/combo_boxes/figure.json') as file:
@@ -163,6 +167,8 @@ class Ui_MainWindow(object):
         self.pushButton_2.setStyleSheet("background-color: rgb(255, 255, 255);\n"
                                         "border-radius: 0px")
         self.pushButton_2.setObjectName("pushButton_2")
+        self.pushButton_2.clicked.connect(self.__handler.text)
+
         self.pushButton_3 = QtWidgets.QPushButton(self.frame)
         self.pushButton_3.setGeometry(QtCore.QRect(10, 340, 201, 31))
         self.pushButton_3.setStyleSheet("background-color: rgb(255, 255, 255);\n"
@@ -173,6 +179,8 @@ class Ui_MainWindow(object):
         self.pushButton_4.setStyleSheet("background-color: rgb(255, 255, 255);\n"
                                         "border-radius: 0px")
         self.pushButton_4.setObjectName("pushButton_4")
+        self.pushButton_4.clicked.connect(self.__handler.generate)
+
         self.pushButton_5 = QtWidgets.QPushButton(self.frame)
         self.pushButton_5.setGeometry(QtCore.QRect(10, 670, 201, 31))
         self.pushButton_5.setStyleSheet("background-color: rgb(255, 255, 255);\n"
