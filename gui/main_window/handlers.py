@@ -49,8 +49,7 @@ class Handler:
         self.__window_instance.image.clear()
 
     def generate(self):
-        print(self.__window_instance.comboBox.currentText())
-        print(self.__window_instance.comboBox_2.currentText())
+        frame = self.__window_instance.comboBox_2.currentText()
         figure = self.__window_instance.comboBox_3.currentText()
         figures_dict = {
             figure: [
@@ -68,6 +67,7 @@ class Handler:
 
         }
         self.__editor.add_figures(figures_dict)
+        self.__editor.add_frame(frame)
         self.__set_image()
 
     def text(self):

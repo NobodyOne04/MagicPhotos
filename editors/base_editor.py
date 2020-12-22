@@ -1,12 +1,18 @@
 import os
+import json
 import random
 
+import cv2
+from numpy import asarray
 from PIL import (
     Image,
     ImageFont,
     ImageDraw,
 )
-
+from editors.config import (
+    FONT_PATH,
+    FRAME_PATH,
+)
 from editors.src.features import (
     set_coordinates,
     set_color,
@@ -41,10 +47,25 @@ class Editor:
             if font_size is None:
                 font_size = random.randint(0, 400)
 
-            font_name = random.choice(os.listdir('editors/sources/fonts'))
-            font = ImageFont.truetype(f'editors/sources/fonts/{font_name}', font_size)
+            font_name = random.choice(os.listdir(FONT_PATH))
+            font = ImageFont.truetype(FONT_PATH / font_name, font_size)
 
         ImageDraw.Draw(self.__image).text(coordinates, text, color, font)
 
     def add_figures(self, figures):
         self.__image = FiguresEditor.add_figures(self.__image, figures)
+
+    def add_frame(self, frame_number):
+        with open(FRAME_PATH, 'r') as file:
+            frames_const = json.load(file)
+        frames_const = frames_const[frame_number]
+        image = cv2.copyMakeBorder(
+            asarray(self.__image),
+            frames_const['top_border_weight'],
+            frames_const['bottom_border_weight'],
+            frames_const['left_border_weight'],
+            frames_const['right_border_weight'],
+            cv2.BORDER_CONSTANT,
+            value=frames_const['colour']
+        )
+        self.__image = Image.fromarray(image)
