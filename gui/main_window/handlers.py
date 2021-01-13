@@ -42,6 +42,7 @@ class Handler:
         name, _ = QFileDialog.getSaveFileName()
 
         image = self.__editor.get_image()
+        image = image.convert('RGB')
 
         if image is None:
             return
@@ -53,6 +54,7 @@ class Handler:
         self.__is_framed = False
         self.__is_filtered = False
         self.__window_instance.image.clear()
+        self.__editor.set_background_colour('белый')
 
     def add_figure(self):
         figures_dict = {
@@ -87,6 +89,9 @@ class Handler:
             self.__editor.add_frame(frame)
             self.__set_image()
             self.__is_framed = True
+
+        self.__editor.set_background_colour(background)
+        self.__set_image()
 
     def append_calendar(self):
         if not self.__is_calendar:

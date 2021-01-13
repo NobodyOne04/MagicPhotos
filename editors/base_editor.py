@@ -14,6 +14,7 @@ from editors.config import (
     CALENDAR,
     FONT_PATH,
     FRAME_PATH,
+    BACKGROUNDS,
 )
 from editors.src.features import (
     set_coordinates,
@@ -26,9 +27,27 @@ from editors.filter_editor import FilterEditor
 class Editor:
     def __init__(self):
         self.__image = None
+        self.__background_colour = (255, 255, 255, 255)
+
+    def set_background_colour(self, colour):
+        with open(BACKGROUNDS, 'r') as file:
+            bg = json.load(file)
+        self.__background_colour = tuple(bg[colour])
+
+    def __set_background(self):
+        background = Image.new('RGBA', (701, 731), self.__background_colour)
+
+        bg_w, bg_h = background.size
+        self.__image.thumbnail((bg_w, bg_h))
+        width, height = self.__image.size
+
+        offset = ((bg_w - width) // 2, (bg_h - height) // 2)
+
+        background.paste(self.__image, offset)
+        return background
 
     def get_image(self):
-        return self.__image
+        return self.__set_background()
 
     def set_image(self, path_to_image):
         self.__image = Image.open(path_to_image)
@@ -38,7 +57,7 @@ class Editor:
             angle = random.randint(0, 360)
         self.__image = self.__image.rotate(angle)
 
-    def add_text(self, coordinates=None, text=None, color=None, font=None, font_size=None):
+    def add_text(self, text=None, color=None, font=None, font_size=None):
         # TODO разобраться какие брать максимальные границы, пока 500х500
         height, width = self.__image.size
         text = set_text(text)
