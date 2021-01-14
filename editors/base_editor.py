@@ -10,7 +10,6 @@ from PIL import (
     ImageDraw,
 )
 from editors.config import (
-    FILTERS,
     CALENDAR,
     FONT_PATH,
     FRAME_PATH,
@@ -23,19 +22,22 @@ from editors.src.features import (
 )
 from editors.figures_editor import FiguresEditor
 from editors.filter_editor import FilterEditor
+from src.decorators import singleton
 
+
+@singleton
 class Editor:
     def __init__(self):
         self.__image = None
-        self.__background_colour = (255, 255, 255, 255)
+        self.background_colour = (255, 255, 255, 255)
 
     def set_background_colour(self, colour):
         with open(BACKGROUNDS, 'r') as file:
             bg = json.load(file)
-        self.__background_colour = tuple(bg[colour])
+        self.background_colour = tuple(bg[colour])
 
     def __set_background(self):
-        background = Image.new('RGBA', (701, 731), self.__background_colour)
+        background = Image.new('RGBA', (701, 731), self.background_colour)
 
         bg_w, bg_h = background.size
         self.__image.thumbnail((bg_w, bg_h))
@@ -58,7 +60,6 @@ class Editor:
         self.__image = self.__image.rotate(angle)
 
     def add_text(self, text=None, color=None, font=None, font_size=None):
-        # TODO разобраться какие брать максимальные границы, пока 500х500
         height, width = self.__image.size
         text = set_text(text)
         color = set_color(color)
@@ -67,8 +68,11 @@ class Editor:
             font_size = random.randint(15, 40)
 
         if font is None:
-            font_name = random.choice(os.listdir(FONT_PATH))
-            font = ImageFont.truetype(os.path.join(FONT_PATH, font_name), font_size)
+            font = random.choice(os.listdir(FONT_PATH))
+        else:
+            font = f'{font}.ttf'
+
+        font = ImageFont.truetype(os.path.join(FONT_PATH, font), font_size)
 
         font_height, font_weight = font.getsize(text)
         coordinates = set_coordinates(

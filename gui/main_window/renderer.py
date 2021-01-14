@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'design.ui'
+# Form implementation generated from reading ui file 'main_window.ui'
 #
 # Created by: PyQt5 UI code generator 5.14.1
 #
@@ -16,6 +16,9 @@ from PyQt5 import (
 )
 
 from gui.main_window.handlers import Handler
+from gui.save_window.save_window import Ui_MainWindow as saver_win
+from gui.figure_window.figure_window import Ui_MainWindow as figure_win
+from gui.text_window.text_window import Ui_MainWindow as text_win
 
 
 class Ui_MainWindow(object):
@@ -23,13 +26,14 @@ class Ui_MainWindow(object):
         super(Ui_MainWindow, self).__init__()
         self.__handler = Handler(self)
         with open('./gui/main_window/combo_boxes/filter.json') as file:
-            self.__filter_data = json.load(file)
+            self.filter_data = json.load(file)
         with open('./gui/main_window/combo_boxes/background.json') as file:
-            self.__figure_data = json.load(file)
+            self.bg_data = json.load(file)
         with open('./gui/main_window/combo_boxes/frame.json') as file:
-            self.__frame_data = json.load(file)
+            self.frame_data = json.load(file)
 
     def setupUi(self, MainWindow):
+        self.obj = MainWindow
         MainWindow.setObjectName("MainWindow")
         MainWindow.resize(938, 771)
         MainWindow.setLayoutDirection(QtCore.Qt.LeftToRight)
@@ -93,7 +97,7 @@ class Ui_MainWindow(object):
         self.comboBox = QtWidgets.QComboBox(self.frame)
         self.comboBox.setGeometry(QtCore.QRect(10, 110, 201, 31))
 
-        for item in self.__filter_data:
+        for item in self.filter_data:
             self.comboBox.addItem(item)
 
         palette = QtGui.QPalette()
@@ -134,6 +138,8 @@ class Ui_MainWindow(object):
                                     "content: \">\"\n"
                                     "}")
         self.comboBox.setObjectName("comboBox")
+        self.comboBox.currentIndexChanged.connect(self.__handler.add_filter)
+
         self.comboBox_2 = QtWidgets.QComboBox(self.frame)
         self.comboBox_2.setGeometry(QtCore.QRect(10, 150, 201, 31))
         self.comboBox_2.setStyleSheet("QComboBox {\n"
@@ -145,8 +151,10 @@ class Ui_MainWindow(object):
                                       "}")
         self.comboBox_2.setObjectName("comboBox_2")
 
-        for item in self.__frame_data:
+        for item in self.frame_data:
             self.comboBox_2.addItem(item)
+
+        self.comboBox_2.currentIndexChanged.connect(self.__handler.add_frame)
 
         self.comboBox_3 = QtWidgets.QComboBox(self.frame)
         self.comboBox_3.setGeometry(QtCore.QRect(10, 190, 201, 31))
@@ -159,22 +167,23 @@ class Ui_MainWindow(object):
                                       "}")
         self.comboBox_3.setObjectName("comboBox_3")
 
-        for item in self.__figure_data:
+        for item in self.bg_data:
             self.comboBox_3.addItem(item)
+        self.comboBox_3.currentIndexChanged.connect(self.__handler.add_background)
 
         self.pushButton_2 = QtWidgets.QPushButton(self.frame)
         self.pushButton_2.setGeometry(QtCore.QRect(10, 300, 201, 31))
         self.pushButton_2.setStyleSheet("background-color: rgb(255, 255, 255);\n"
                                         "border-radius: 0px")
         self.pushButton_2.setObjectName("pushButton_2")
-        self.pushButton_2.clicked.connect(self.__handler.text)
+        self.pushButton_2.clicked.connect(lambda: self.__handler.open_window(text_win))
 
         self.pushButton_3 = QtWidgets.QPushButton(self.frame)
         self.pushButton_3.setGeometry(QtCore.QRect(10, 340, 201, 31))
         self.pushButton_3.setStyleSheet("background-color: rgb(255, 255, 255);\n"
                                         "border-radius: 0px")
         self.pushButton_3.setObjectName("pushButton_3")
-        self.pushButton_3.clicked.connect(self.__handler.add_figure)
+        self.pushButton_3.clicked.connect(lambda: self.__handler.open_window(figure_win))
 
         self.pushButton_4 = QtWidgets.QPushButton(self.frame)
         self.pushButton_4.setGeometry(QtCore.QRect(10, 450, 201, 31))
@@ -195,7 +204,7 @@ class Ui_MainWindow(object):
         self.pushButton_6.setStyleSheet("background-color: rgb(255, 255, 255);\n"
                                         "border-radius: 0px")
         self.pushButton_6.setObjectName("pushButton_6")
-        self.pushButton_6.clicked.connect(self.__handler.save_image)
+        self.pushButton_6.clicked.connect(lambda: self.__handler.open_window(saver_win))
 
         self.pushButton_8 = QtWidgets.QPushButton(self.frame)
         self.pushButton_8.setGeometry(QtCore.QRect(10, 380, 201, 31))
