@@ -14,6 +14,7 @@ from gui.save_window.handlers import Handler
 
 class Ui_MainWindow(object):
     def __init__(self, super_handler):
+        self.super_handler = super_handler
         self.__handler = Handler(self)
         with open('./gui/save_window/combo_boxes/resolution.json') as file:
             self.__resolution_data = json.load(file)

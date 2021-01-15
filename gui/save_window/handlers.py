@@ -13,6 +13,8 @@ class Handler:
         options |= QFileDialog.DontUseNativeDialog
         name, _ = QFileDialog.getSaveFileName()
 
+        self.__window_instance.super_handler.merge_all()
+
         image = self.__editor.get_image()
         image = image.convert('RGB')
 
