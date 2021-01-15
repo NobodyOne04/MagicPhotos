@@ -38,22 +38,28 @@ class Editor:
             bg = json.load(file)
         self.background_colour = tuple(bg[colour])
 
-    def __set_background(self):
+    def set_background(self, image=None):
+        if not image:
+            image = self.__image
+
         background = Image.new('RGBA', (701, 731), self.background_colour)
 
         bg_w, bg_h = background.size
-        self.__image.thumbnail((bg_w, bg_h))
+        image.thumbnail((bg_w, bg_h))
         width, height = self.__image.size
 
         offset = ((bg_w - width) // 2, (bg_h - height) // 2)
 
-        background.paste(self.__image, offset)
+        background.paste(image, offset)
         return background
 
     def get_image(self):
-        return self.__set_background()
+        return self.set_background()
 
-    def set_image(self, path_to_image):
+    def set_image(self, path_to_image, image=None):
+        if image:
+            self.__image = image
+            return
         self.__image = Image.open(path_to_image)
 
     def rotate(self, angle=None):
@@ -84,11 +90,6 @@ class Editor:
 
         ImageDraw.Draw(self.__image).text(coordinates, text, color, font)
 
-    def append_calendar(self):
-        calendar = Image.open(CALENDAR)
-        calendar.thumbnail(self.__image.size)
-        self.__image.paste(calendar, (0, 0), calendar)
-
     def add_filter(self, filter):
         self.__image = FilterEditor.add_filter(self.__image, filter)
 
@@ -108,7 +109,7 @@ class Editor:
             cv2.BORDER_CONSTANT,
             value=frames_const['colour']
         )
-        self.__image = Image.fromarray(image)
+        return Image.fromarray(image).resize(self.__image.size)
 
     def brightness(self, image):
         im = image.convert('L')
@@ -117,21 +118,23 @@ class Editor:
 
     # side - бывает top или bottom
     # month_png -
-    def append_calendar(self, side, month_image_path):
-        # background = Image.new('RGBA', (701, 731), self.background_colour)
+    def append_calendar(self, side, month_image_path, image=None):
+        if not image:
+            image = self.__image
+
         background = Image.new('RGBA', (701, 731), self.background_colour)
 
         bg_w, bg_h = background.size
-        self.__image.thumbnail((bg_w, bg_h))
-        width, height = self.__image.size
+        image.thumbnail((bg_w, bg_h))
+        width, height = image.size
 
         offset = ((bg_w - width) // 2, (bg_h - height) // 2)
 
-        background.paste(self.__image, offset)
+        background.paste(image, offset)
 
         month_image = Image.open(month_image_path, 'r').convert("RGBA")
         month_image_w, month_image_h = month_image.size
-        width, height = self.__image.size
+        width, height = image.size
         bg_w, bg_h = background.size
         offset_w = (bg_w - width) // 2
         offset_h = (bg_h - height) // 2
@@ -149,5 +152,6 @@ class Editor:
             background.paste(month_image,
                              ((bg_w - month_image_w) // 2, (offset_h + height) + ((offset_h - month_image_h) // 2)),
                              mask=month_image)
+
         return background
 
