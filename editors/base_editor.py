@@ -7,7 +7,9 @@ from numpy import asarray
 from PIL import (
     Image,
     ImageFont,
+    ImageStat,
     ImageDraw,
+    ImageOps,
 )
 from editors.config import (
     CALENDAR,
@@ -107,3 +109,45 @@ class Editor:
             value=frames_const['colour']
         )
         self.__image = Image.fromarray(image)
+
+    def brightness(self, image):
+        im = image.convert('L')
+        stat = ImageStat.Stat(im)
+        return stat.rms[0]
+
+    # side - бывает top или bottom
+    # month_png -
+    def append_calendar(self, side, month_image_path):
+        # background = Image.new('RGBA', (701, 731), self.background_colour)
+        background = Image.new('RGBA', (701, 731), self.background_colour)
+
+        bg_w, bg_h = background.size
+        self.__image.thumbnail((bg_w, bg_h))
+        width, height = self.__image.size
+
+        offset = ((bg_w - width) // 2, (bg_h - height) // 2)
+
+        background.paste(self.__image, offset)
+
+        month_image = Image.open(month_image_path, 'r').convert("RGBA")
+        month_image_w, month_image_h = month_image.size
+        width, height = self.__image.size
+        bg_w, bg_h = background.size
+        offset_w = (bg_w - width) // 2
+        offset_h = (bg_h - height) // 2
+
+        if self.brightness(background) < 100:
+            r, g, b, a = month_image.split()
+            rgb_month_image = Image.merge('RGB', (r, g, b))
+            month_image_inverted = ImageOps.invert(rgb_month_image)
+            r2, g2, b2 = month_image_inverted.split()
+            month_image = Image.merge('RGBA', (r2, g2, b2, a))
+        if side == 'top':
+            background.paste(month_image, ((bg_w - month_image_w) // 2, (offset_h - month_image_h) // 2),
+                             mask=month_image)
+        else:
+            background.paste(month_image,
+                             ((bg_w - month_image_w) // 2, (offset_h + height) + ((offset_h - month_image_h) // 2)),
+                             mask=month_image)
+        return background
+
