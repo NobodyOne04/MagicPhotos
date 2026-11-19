@@ -1,0 +1,24 @@
+# 0002. PyQt5 windows over one singleton Editor; options in JSON
+
+- Status: Accepted
+- Date: 2026-11-19
+
+The GUI is a set of Qt Designer windows whose handlers call one shared `Editor` holding the
+current image; what each dropdown offers is data in JSON files, not code.
+
+## Technical details
+- **Windows** (`gui/`): main, figure, text and save windows, each designed in `gui/src/*.ui`,
+  rendered by generated Python, with `handlers.py` wiring buttons to the editor. File dialogs
+  use `QFileDialog` (non-native).
+- **Editor** (`editors/base_editor.py`): decorated with `@singleton` (`src/decorators.py`
+  caches one instance per class), so every window edits the same image. Pillow does
+  backgrounds, text, shapes, rotation and calendars; OpenCV `copyMakeBorder` does frames.
+- **Data-driven options**: `gui/*/combo_boxes/*.json` (filters, frames, fonts, sizes,
+  resolutions) and `editors/sources/*.json` (backgrounds, frames, texts).
+- **Random defaults** (`editors/src/features.py`): shapes and text get random colour,
+  position or size when the user leaves them empty.
+
+## Technologies and alternatives
+- Involved: Python 3.8, PyQt5 5.14, Pillow 8.0, opencv-python 4.4, QtPy.
+- Alternatives: Tkinter (no Designer workflow); passing the image between windows explicitly
+  instead of a singleton (cleaner, more wiring).
