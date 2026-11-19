@@ -15,8 +15,6 @@ import numpy as np
 class FiguresEditor:
     figures_dict = {
         'circle': 'add_circles',
-        'rombus': 'add_rombuses',
-        'heart': 'add_hearts',
         'star': 'add_stars'
     }
 

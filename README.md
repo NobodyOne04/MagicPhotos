@@ -18,7 +18,7 @@ python3 entrypoint.py
 | Background | colours from `editors/sources/backgrounds.json` |
 | Frame | `frame1`, `frame2` (OpenCV borders) |
 | Filter | black and white, sepia, brightness |
-| Shapes | circles and stars: colour, position and size, or random (diamonds and hearts are listed in `FiguresEditor` but not implemented) |
+| Shapes | circles and stars: colour, position and size, or random |
 | Text | text, colour, font (two bundled TTFs), size |
 | Calendar | a month page next to the photo |
 | Rotate | any angle |
